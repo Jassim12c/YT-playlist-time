@@ -1,7 +1,7 @@
 import re
 import datetime
 import tkinter as tk
-import tkinter.font as tkFont
+import tkinter.font as tk_font
 
 from googleapiclient.discovery import build
 
@@ -66,7 +66,7 @@ class Url:
             pady=10, padx=60,
         )
 
-        button_font = tkFont.Font(family="Arial", size=8, weight="bold", slant="italic")
+        button_font = tk_font.Font(family="Arial", size=8, weight="bold", slant="italic")
 
         button = tk.Button(
             self.mainframe,
@@ -83,6 +83,10 @@ class Url:
         )
 
     def url(self):
+
+        yt_url = re.compile(r'\b=(\w+)')
+        get_id = yt_url.search(self.entry.get()).group(1)
+
         api_key = 'AIzaSyAwfXHyNN54LWmT_9IzAPdXT4iOb0QgauQ'
 
         hours_pattern = re.compile(r'(\d+)H')
@@ -97,7 +101,7 @@ class Url:
 
             pl_request = youtube.playlistItems().list(
                 part='contentDetails',
-                playlistId=self.entry.get(),
+                playlistId=get_id,
                 maxResults=50,
                 pageToken=next_page_token,
             )
@@ -132,7 +136,7 @@ class Url:
 
                 total_seconds += video_seconds
 
-            next_page_token = pl_response.get('nextPageToken')
+            next_page_token = pl_response.get('next_page_token')
 
             if not next_page_token:
                 break
@@ -147,7 +151,7 @@ class Url:
             text=f'playlist time: {hours}:{minutes}:{seconds}',
             fg='white',
             bg='lightblue',
-            font=tkFont.Font(
+            font=tk_font.Font(
                 family="Courier",
                 size=18,
                 weight="bold",
