@@ -12,6 +12,11 @@ class Url:
         self.master = master
         self.mainframe = tk.Frame(self.master, bg='lightblue')
         self.mainframe.pack(fill=tk.BOTH, expand=True)
+        self.entry = tk.Entry(  # URL input
+            self.mainframe,
+            bd=3,
+            width=50,
+        )
 
         # Calling methods
         self.build_grid()
@@ -55,16 +60,10 @@ class Url:
             pady=10,
         )
 
-        self.entry = tk.Entry(
-            self.mainframe,
-            bd=3,
-            width=50,
-        )
-
         self.entry.grid(
             row=1, column=0,
             sticky='w',
-            pady=10, padx=45,
+            pady=10, padx=60,
         )
 
         button_font = tkFont.Font(family="Arial", size=8, weight="bold", slant="italic")
@@ -92,7 +91,7 @@ class Url:
 
         total_seconds = 0
 
-        nextPageToken = None
+        next_page_token = None
         while True:
             youtube = build('youtube', 'v3', developerKey=api_key)
 
@@ -100,7 +99,7 @@ class Url:
                 part='contentDetails',
                 playlistId=self.entry.get(),
                 maxResults=50,
-                pageToken=nextPageToken,
+                pageToken=next_page_token,
             )
 
             pl_response = pl_request.execute()
@@ -133,9 +132,9 @@ class Url:
 
                 total_seconds += video_seconds
 
-            nextPageToken = pl_response.get('nextPageToken')
+            next_page_token = pl_response.get('nextPageToken')
 
-            if not nextPageToken:
+            if not next_page_token:
                 break
 
         total_seconds = int(total_seconds)
@@ -156,7 +155,7 @@ class Url:
         )
 
         playlist_time.grid(
-            row=1, column= 1,
+            row=1, column=1,
             sticky='ew',
         )
 
