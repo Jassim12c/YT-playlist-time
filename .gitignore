@@ -1,2 +1,7 @@
 virenv
 .idea/
+dist
+minified_main.spec
+minified_main.py
+build
+__pycache__/
